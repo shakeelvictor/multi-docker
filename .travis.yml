@@ -1,0 +1,17 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t shakeelvictor/react-test -f ./client/Dockerfile.dev ./client
+script:
+  - docker run shakeelvictor/react-test npm test -- --coverage
+after_success:
+  - docker build -t shakeelvictor/multi-client ./client
+  - docker build -t shakeelvictor/multi-nginx ./nginx
+  - docker build -t shakeelvictor/multi-server ./server
+  - docker build -t shakeelvictor/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push shakeelvictor/multi-client
+  - docker push shakeelvictor/multi-nginx
+  - docker push shakeelvictor/multi-server
+  - docker push shakeelvictor/multi-worker
