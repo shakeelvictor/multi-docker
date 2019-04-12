@@ -15,3 +15,15 @@ after_success:
   - docker push shakeelvictor/multi-nginx
   - docker push shakeelvictor/multi-server
   - docker push shakeelvictor/multi-worker
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-us-east-2-933783733647
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
